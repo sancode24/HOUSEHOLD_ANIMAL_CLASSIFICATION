@@ -1,0 +1,6 @@
+data/
+outputs/weights/
+__pycache__/
+*.pyc
+.venv/
+kaggle.json
