@@ -66,8 +66,10 @@ def main():
         for split, split_files in parts.items():                       # write each part to disk
             dst = config.DATA_DIR / split / cls_dir                    # e.g. data/split/train/cats
             dst.mkdir(parents=True, exist_ok=True)                     # create the folder
-            for f in split_files:                                      # copy every image
-                shutil.copy2(f, dst / f.name)                          # copy2 also preserves file metadata
+            for f in split_files:                                      # re-save every image instead of copying:
+                with Image.open(f) as im:                              #   some files are grayscale+alpha (2 ch),
+                    im.convert("RGB").save(dst / f.name, "JPEG",       #   CMYK, or PNG/GIF named .jpg, which
+                                           quality=95)                 #   TensorFlow's decoder rejects mid-training
             print(f"  {split:<5} -> {len(split_files):>5} images")      # report counts
 
 
